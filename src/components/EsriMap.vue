@@ -30,6 +30,7 @@
                     url: "https://maps.mecklenburgcountync.gov/agsadaptor/rest/services/basemap/MapServer" 
                 } ),
             addr_layer: new FeatureLayer( { 
+                    id: "addr_lyr",
                     url: "https://maps.mecklenburgcountync.gov/agsadaptor/rest/services/ADM/edit_layers/FeatureServer/0",
                     outFields: [ "SITEADDID", "ADDRNUM", "PREADDRNUM", "STREETNAME", "STANDTYPE", "STREETTYPE", "ADDRNUMSUF", "UNITTYPE", "UNITID", "MUNICIPALITY" ]
                 } )
@@ -90,13 +91,24 @@
                     } )
                 
                 // Add widget to top-right of the view
-                _this.map_view.ui.add( editor, "top-left" )
+                //_this.map_view.ui.add( editor, "top-left" )
                 
-                _this.map_view.on("click", function(event) {  
-                    _this.map_view.hitTest(event).then(function(response) {
-                        var firstLayer = response.results[ 0 ];
-                        var geometry = firstLayer.graphic.geometry;
-                        console.log( response.results[0].graphic.attributes[ _this.addr_layer.objectIdField] )
+                _this.map_view.on( "click", _this.select_addr );
+
+            },
+
+            select_addr( event ){
+                const _this = this
+
+                _this.map_view.hitTest( event ).then( response => {
+                    response.results.forEach( result => {
+                        if( result.graphic.id === "addr_lyr" ){
+                            console.log( result.graphic.attributes[ _this.addr_layer.objectIdField] )
+
+                        }
+
+                    } )
+                    
                         
                         /*if (geometry.type === "polygon") {
                             var symbol = new SimpleFillSymbol(
@@ -109,9 +121,7 @@
                             view.graphics.add(graphic);
                         }*/
                     //});
-                });
-            });
-
+                } );
             }
 		    
 	    }

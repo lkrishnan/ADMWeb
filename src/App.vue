@@ -11,40 +11,76 @@
 			</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<!--Buttons for big screen -->
-			<v-btn class="ma-2 d-none d-sm-flex font-weight-medium" outlined>
-				<v-icon left>mdi-plus-circle</v-icon>Add New Legal
-			</v-btn>
-			<v-btn class="ma-2 d-none d-sm-flex font-weight-medium" outlined>
-				<v-icon left>mdi-login-variant</v-icon>Login
-			</v-btn>
-			<v-btn class="ma-2 d-none d-sm-flex font-weight-medium" outlined>
-				<v-icon left>mdi-logout-variant</v-icon>Logout
-			</v-btn>
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">				
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-green" v-bind="attrs" v-on="on">
+						<v-icon>mdi-download-outline</v-icon>
+					</v-btn>		
+				</template>
+				<span>Reconcile</span>
+			</v-tooltip>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">				
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-green" v-bind="attrs" v-on="on">
+						<v-icon>mdi-upload-outline</v-icon>
+					</v-btn>		
+				</template>
+				<span>Post</span>
+			</v-tooltip>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">				
+					<v-btn class="ma-2 d-none d-sm-flex" color="orange" v-bind="attrs" v-on="on">
+						<v-icon>mdi-plus-circle-outline</v-icon>
+					</v-btn>		
+				</template>
+				<span>Add</span>
+			</v-tooltip>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">				
+					<v-btn class="ma-2 d-none d-sm-flex" color="orange" v-bind="attrs" v-on="on">
+						<v-icon>mdi-pencil-outline</v-icon>
+					</v-btn>		
+				</template>
+				<span>Edit</span>
+			</v-tooltip>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">				
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-bind="attrs" v-on="on">
+						<v-icon>mdi-login-variant</v-icon>
+					</v-btn>		
+				</template>
+				<span>Login</span>
+			</v-tooltip>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on, attrs }">				
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-bind="attrs" v-on="on">
+						<v-icon>mdi-logout-variant</v-icon>
+					</v-btn>		
+				</template>
+				<span>Logout</span>
+			</v-tooltip>
+			
 		</v-app-bar>
 
 		<v-main>
-			<v-navigation-drawer absolute permanent right width="400px" class="grey lighten-4">
-				<v-container>
-    				<v-row>
-      					<v-col cols="12">
-        					
-      					</v-col>
-    				</v-row>
-  				</v-container>
-			</v-navigation-drawer>
-			<EsriMap />
+			<Information />
 		</v-main>
 	</v-app>
 </template>
 
 <script>
-	import EsriMap from "./components/EsriMap.vue"
+	import Information from "./components/Information.vue"
 	import Search from "./components/Search.vue"
 	export default {
   		name: "App",
 
 		components: {
-            EsriMap,
+            Information,
 			Search
 		},  
 

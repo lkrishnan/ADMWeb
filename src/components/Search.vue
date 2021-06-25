@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<v-row justify="center">
+		<!--<v-row justify="center">
 			<v-col sm="8" md="6" lg="5">
 				<v-card class="pa-5">
 					<v-autocomplete
@@ -19,25 +19,9 @@
 							<v-chip class="mr-2" color="primary" outlined label>{{ data.item.value.tag }}</v-chip>{{ data.item.text }}
 						</template>
 					</v-autocomplete>
-					<v-row justify="center" class="pa-2">    
-						<v-col md="10" lg="8">     
-							<v-select
-								v-model="block_selection"
-								:items="blocks" 
-								label="Select Block Number"            
-								item-value="countystcode"> 
-									<template slot="selection" slot-scope="data">
-										{{ ( data.item.lowerblock && data.item.upperblock ? data.item.lowerblock + ' - ' + data.item.upperblock : 'None' ) }}
-									</template>
-									<template slot="item" slot-scope="data">
-										{{ ( data.item.lowerblock && data.item.upperblock ? data.item.lowerblock + ' - ' + data.item.upperblock : 'None' ) }}
-									</template>
-							</v-select> 
-						</v-col>
-					</v-row> 
 				</v-card>
 			</v-col>
-		</v-row> 
+		</v-row>--> 
 	</v-container>
 </template>
 
@@ -64,26 +48,6 @@
       	} ),
       
       	computed: {
-			admkey( ){
-				return this.$store.state.admkey
-			
-			},
-			blocks( ){
-				return this.$store.state.blocks
-			
-			},
-			block_selection: {
-				set( block_selection ){
-					this.$store.commit( "block_selection", block_selection )
-					this.$router.push( { name: "Detail", params: { stcode: block_selection } } )
-					
-				},
-      			get( ){
-					return this.$store.state.block_selection
-      			
-				}
-
-			}, 
 			search_results: {
       			set( search_results ){
 					//this.$store.commit( "search_results", search_results )
@@ -94,10 +58,6 @@
       			
 				}
 							
-			},
-			stcode( ){
-				return this.$route.params.stcode
-
 			},
 			ws( ){
 				return this.$store.state.ws
