@@ -1,15 +1,12 @@
 <template>
 	<v-app>
-		<v-app-bar app color="white">
-			<v-toolbar-title class="headline">
-				<div class="d-none d-sm-flex font-weight-bold">
-					ADM Web
-				</div>
-				<v-avatar class="d-flex d-sm-none">
-					<v-img max-height="48" max-width="48" src="img/icons/48x48.png"></v-img>
-				</v-avatar>
-			</v-toolbar-title>
-			<v-spacer></v-spacer>
+		<v-app-bar app flat color="teal">
+			<v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="drawerChng( )"></v-app-bar-nav-icon>
+			<v-avatar class="d-flex">
+				<v-img max-height="48" max-width="48" src="img/icons/48x48.png"></v-img>
+			</v-avatar>
+			<Search />
+			
 			<!--Buttons for big screen -->
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">				
@@ -47,9 +44,9 @@
 				<span>Edit</span>
 			</v-tooltip>
 
-			<v-tooltip bottom>
+			<!--<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">				
-					<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-bind="attrs" v-on="on">
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-bind="attrs" v-on="on" v-if="( auth === '' )" @click="takeAction( 'Login' )">
 						<v-icon>mdi-login-variant</v-icon>
 					</v-btn>		
 				</template>
@@ -58,35 +55,100 @@
 
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">				
-					<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-bind="attrs" v-on="on">
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-bind="attrs" v-on="on" v-if="( auth !== '' )" @click="takeAction( 'Logout' )">
 						<v-icon>mdi-logout-variant</v-icon>
 					</v-btn>		
 				</template>
 				<span>Logout</span>
-			</v-tooltip>
+			</v-tooltip>-->
+
+			<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-if="( auth === '' )" @click="takeAction( 'Login' )">
+				<v-icon left>mdi-login-variant</v-icon>Login
+			</v-btn>
+			<v-btn class="ma-2 d-none d-sm-flex" color="light-blue" v-if="( auth !== '' )" @click="takeAction( 'Logout' )">
+				<v-icon left>mdi-logout-variant</v-icon>Logout
+			</v-btn>
 			
 		</v-app-bar>
 
 		<v-main>
-			<Information />
+			<router-view />
 		</v-main>
 	</v-app>
 </template>
 
 <script>
-	import Information from "./components/Information.vue"
-	import Search from "./components/Search.vue"
+	import Search from "./components/Search.vue";
+	
 	export default {
   		name: "App",
 
 		components: {
-            Information,
-			Search
+            Search
+        
 		},  
 
-  		data: () => ( {
-    	//
-  		} )
+		computed: {
+        	auth( ){
+          		return this.$store.state.token
+        	},
+			
+			drawer: {
+				set( drawer ){
+					this.$store.commit( "drawer", drawer )
+									
+				},
+      			get( ){
+					return this.$store.state.drawer
+      			
+				}
+							
+			},
+			
+			new_addrinfo( ){
+          		return this.$store.state.new_stinfo
+        	},
+			
+			addrinfo( ){
+          		return this.$store.state.stinfo
+        	},
+			
+			route_name( ){
+				return this.$route.name; 
+			}
+      
+      	},
+
+		methods: {
+			drawerChng( ){
+				const _this = this
+
+				console.log( "drawer change" )
+
+				_this.drawer_flag = true
+				_this.drawer = !_this.drawer
+				
+			},
+
+			takeAction( type ){
+				const _this = this
+
+				switch( type ){
+					case "Login":
+						_this.$router.push( { name: type } )
+						break
+
+					case "Logout":
+						localStorage.removeItem( "token" )
+          				_this.$store.commit( "auth", "" )
+						//_this.$router.push( { name: "Information" } )
+						break
+
+				}
+
+			}
+
+		}
 	
 	}
 </script>

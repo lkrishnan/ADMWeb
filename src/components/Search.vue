@@ -1,37 +1,46 @@
 <template>
 	<v-container>
-		<!--<v-row justify="center">
-			<v-col sm="8" md="6" lg="5">
-				<v-card class="pa-5">
-					<v-autocomplete
-						v-model="st_selection"
-						label="Enter a Street Name"
-						:loading="loading"
-						:items="search_results"
-						:search-input.sync="searchInput"
-						clearable
-						Event
-						@click:clear="clearResults">
+		<v-row>
+			<v-col md="6">
+				<v-card outlined color="white">
+				<v-autocomplete 
+					clearable
+					dense 
+					Event
+					filled 
+					hide-no-data
+					hide-details
+					rounded 
+					color="teal"
+					v-model="st_selection"
+					:loading="loading"
+					:items="search_results"
+					:search-input.sync="searchInput"
+					@click:clear="clearResults">
 						<template slot="selection" slot-scope="data">
 							<v-chip class="mr-2" color="primary" outlined label>{{ data.item.value.tag }}</v-chip>{{ data.item.text }}
 						</template>
 						<template slot="item" slot-scope="data">
 							<v-chip class="mr-2" color="primary" outlined label>{{ data.item.value.tag }}</v-chip>{{ data.item.text }}
 						</template>
-					</v-autocomplete>
+				</v-autocomplete>
 				</v-card>
 			</v-col>
-		</v-row>--> 
+		</v-row>
 	</v-container>
 </template>
 
 <script>
   	import axios from "axios";
-	import GetInfoByADMKey from "../js/getInfoByADMKey"
-	import JSONToURL from "../js/jsontourl"
-
+	import FormatAddrInfo from "../js/formatAddrInfo"
+	
   	export default {
       	name: "search",
+
+		mounted: function( ){
+      		this.searchByMatID( )
+
+    	},
 
 		data: ( ) => ( {
 			axios_inst: axios.create( { 
@@ -48,9 +57,58 @@
       	} ),
       
       	computed: {
+			addr_fields( ){
+				return this.$store.state.addr_fields
+
+			},
+
+			addrinfo: {
+      			set( addrinfo ){
+					this.$store.commit( "addrinfo", addrinfo )
+									
+				},
+      			get( ){
+					return this.$store.state.addrinfo
+      			
+				}
+							
+			},
+
+			addr_layer( ){
+                return this.$store.state.addr_layer
+
+            },
+			
+			field_desc( ){
+				return this.$store.state.ws
+			
+			},
+			
+			matid( ){
+            	return this.$route.params.matid; 
+          	
+			},
+
+			zoom( ){
+				return this.$route.meta.zoom
+
+			},
+
+			sel_feature: {
+      			set( sel_feature ){
+					this.$store.commit( "sel_feature", sel_feature )
+									
+				},
+      			get( ){
+					return this.$store.state.sel_feature
+      			
+				}
+							
+			},
+
 			search_results: {
       			set( search_results ){
-					//this.$store.commit( "search_results", search_results )
+					this.$store.commit( "search_results", search_results )
 									
 				},
       			get( ){
@@ -59,113 +117,102 @@
 				}
 							
 			},
+
 			ws( ){
 				return this.$store.state.ws
 			
+			},
+
+			zoom_to_feature: {
+      			set( zoom_to_feature ){
+					this.$store.commit( "zoom_to_feature", zoom_to_feature )
+									
+				},
+      			get( ){
+					return this.$store.state.zoom_to_feature
+      			
+				}
+							
 			}
 
       	},
       
       	watch: {
+			matid: function( ){
+				this.searchByMatID( )
+
+      		},
+
         	searchInput( val ){
 				val && val !== this.st_selection && this.getItems( val )
 
         	},
-        	async st_selection( new_selection, old_selection ){
-				const _this = this;
-					
+        	
+			async st_selection( new_selection, old_selection ){
+				const _this = this
+
 				if( _this.st_selection ){
-					try{
-						const admkey = _this.st_selection.admkey,
-							aliaslegalflag = _this.st_selection.aliaslegalflag,
-							data = await GetInfoByADMKey( admkey, aliaslegalflag );
-						
-						if( data.length > 0 ){
-							if( !data.some( block => block.countystcode.toString( ) === _this.stcode ) ){ //avoiding selecting the displayed stcode again
-								_this.$store.commit( "admkey", admkey )
-								_this.$store.commit( "blocks", data )
+					_this.zoom_to_feature = true
 
-								if( data.length == 1 ){
-									_this.$router.push( { name: "Detail", params: { stcode: data[ 0 ].countystcode } } )
-								
-								}
-
-							}
-						
-						}
-					
-					}
-					catch( error ){
-						console.log( "parsing failed", error );
-
-					}
+					//push URL hash
+					_this.$router.push( { name: "Detail", params: { matid: _this.st_selection.feature.attributes.SITEADDID } } )
 					
 				}
 				
 			}
       
       	},
-      
+
       	methods: {
         	getItems( v ){
-				const _this = this;
+				const _this = this
 
 				if( v.length < 3 ){
-					_this.search_results = [ ];
-					_this.loading = false;
+					_this.search_results = [ ]
+					_this.loading = false
 					return
 
 				}
 
-				const url = _this.ws.adm + "v1/query/streetfileall",
-					params = {
-							columns: "admkey, aliaslegalflag",
-							filter: "admkey like '" + v.toUpperCase( ) + "%'",
-							group: "admkey, aliaslegalflag"
-						}
-
-				_this.loading = true;
-				_this.cancelSearch( );
+				_this.loading = true
+				_this.cancelSearch( )
       			_this.cancel_source = axios.CancelToken.source( )
 
-				_this.axios_inst.get( `${ url }?${ JSONToURL( params ) }`, { cancelToken: _this.cancel_source.token } )
-					.then( function( response ){
-						_this.cancel_source = null
-						return response.data
+				_this.addr_layer.queryFeatures( {
+                    where: "FULLADDR like '" + v.toUpperCase( ) + "%'",
+                    outFields: _this.addr_fields,
+                    returnGeometry: true
+                } ).then( ( results ) => {
+					let search_results = [ ]
 
-					} )
-					.then( legal_alias_data => { 
-						let search_results = [ ];
-
-						legal_alias_data.forEach( element => {
-							search_results.push( { 
-								"text": element.admkey, 
-								"value": { 
-									"tag": ( element.aliaslegalflag ? "Legal" : "Alias" ), 
-									"admkey": element.admkey, 
-									"aliaslegalflag": element.aliaslegalflag 
-								}
-
-							} );
+					results.features.forEach( element => {
+						search_results.push( { 
+							"text": element.attributes.FULLADDR, 
+							"value": { 
+								"tag": "Addr", 
+								"feature": element 
+							
+							}
 
 						} )
 
-						_this.search_results = search_results
+					} )
 
-						_this.loading = false;
+					_this.search_results = search_results
+					_this.loading = false
+            
+                } )
+				.catch( thrown => {
+					if( axios.isCancel( thrown ) ){
+						//console.log('Request canceled', thrown.message);
 					
-					} )
-					.catch( thrown => {
-						if( axios.isCancel( thrown ) ){
-							//console.log('Request canceled', thrown.message);
-						
-						}else{
-							console.log( "parsing failed", thrown );
-						
-						}
+					}else{
+						console.log( "parsing failed", thrown );
 					
-					} )
-			
+					}
+					
+				} )
+
 			},
 			cancelSearch( ){
 				const _this = this
@@ -179,7 +226,41 @@
 			clearResults( ){
 				this.search_results = [ ];
         
-        	}
+        	},
+
+			searchByMatID( ){
+				const _this = this,
+					regex = new RegExp( "\\d{1,6}" );
+
+				regex.test( _this.matid )
+
+				_this.addr_layer.queryFeatures( {
+                    where: "SITEADDID = '" + _this.matid + "'",
+                    outFields: _this.addr_fields,
+                    returnGeometry: true
+                } ).then( async ( results ) => {
+					if( results.features.length > 0 ){
+						const feature = results.features[ 0 ] 
+						
+						//set selected feature to hightlight the point on the map
+						_this.sel_feature = {
+							feature: feature,
+							zoom: _this.zoom
+
+						}
+
+						//set the addrinfo to display addr infomration
+						_this.addrinfo = await FormatAddrInfo( feature.attributes )
+
+					}
+
+				} )
+				.catch( thrown => {
+					console.log( "parsing failed", thrown );
+					
+				} )
+
+			}
       
       	}
   
