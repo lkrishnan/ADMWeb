@@ -1,130 +1,239 @@
 <template>
-  	<v-container>
-    	<v-form v-model="valid" ref="form" v-if="new_addrinfo">
-			<v-row>
-				<v-col cols="12">
-					<v-card class="my-5 pa-5">
-						<v-card-title>{{ title }}</v-card-title>
-						<v-row>
-							<v-col cols="12">
-								<v-data-table 
-									:headers="headers" 
-									:items="new_addrinfo" 
-									:items-per-page="1"
-									hide-default-footer>
-									<!--<v-autocomplete
-										v-model="item.STREETNAMEJURIS"
-										label="Enter StreetNameJuris"
-										:loading="loading"
-										:items="search_results"
-										:search-input.sync="searchInput"
-										clearable
-										Event
-										@click:clear="clearResults">
-										<template slot="selection" slot-scope="data">
-											<v-chip class="mr-2" color="primary" outlined label>{{ data.item.value.tag }}</v-chip>{{ data.item.text }}
-										</template>
-										<template slot="item" slot-scope="data">
-											<v-chip class="mr-2" color="primary" outlined label>{{ data.item.value.tag }}</v-chip>{{ data.item.text }}
-										</template>
-									</v-autocomplete>-->
-									<template v-slot:item.STATUS="{item}">
-										<v-select
-											v-model="item.STATUS"
-											:items="status"
-											menu-props="auto"
-											label="Select"
-											hide-details
-											single-line
-											dense>
-											<template slot="selection" slot-scope="data">
-												{{ data.item.text }}
-											</template>
-											<template slot="item" slot-scope="data">
-												{{ data.item.text }}
-											</template>
-										</v-select>
-									</template>
-								</v-data-table> 
-							</v-col>
-            			</v-row>
-						<v-row>
-              				<v-col cols="12">
-                				<v-data-table 
-									:headers="headers2" 
-									:items="new_addrinfo" 
-									:items-per-page="1" 
-									hide-default-footer>
-									
-                				</v-data-table>
-              				</v-col>
-            			</v-row>
-            		</v-card>
-				</v-col>
-			</v-row>
-			<v-row>
-        		<v-col cols="12">
-          			<v-alert
-						dense
-						outlined
-						type="error"
-						v-if="nochanges">
-						No edits were detected. Make some changes before saving or hit <strong>Cancel</strong> to exit edit mode.
-					</v-alert>
-					<v-btn 
-						class="ma-2" 
-						color="primary" 
-						x-large
-						@click="save( )">
-						<v-icon left>mdi-content-save</v-icon>Save
-					</v-btn>
-					<v-btn 
-						class="ma-2" 
-						color="primary" 
-						x-large
-						@click="cancel( )">
-						<v-icon left>mdi-arrow-left-circle</v-icon>Cancel
-					</v-btn>
-        		</v-col>
-      		</v-row>
-      	</v-form>
-  	</v-container>
+	<v-card
+        class="rounded-0"
+        :loading="loading"
+		v-if="route_name === 'Edit'"
+    >
+        <template slot="progress">
+            <v-progress-linear
+                color="deep-purple"
+                height="10"
+                indeterminate
+            ></v-progress-linear>
+        </template>
+
+        <v-img
+            height="250"
+            :src="addrinfo.photo"
+        ></v-img>
+
+        <v-card-title>{{ addrinfo.title }}</v-card-title>
+
+        <v-simple-table>
+            <template v-slot:default>
+				<thead>
+					<tr>
+					<th class="text-left">
+						Field
+					</th>
+					<th class="text-left">
+						Value
+					</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Street Name and Juris</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Address Number</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Street Prefix Direction</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Street Name</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Street Name</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Street Name</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Standard Street Type</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Meck Street Type</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Address Unit Type</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Address Unit Number</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Municipality</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Effective Status</td>
+						<td>
+							<v-select
+								v-model="new_addrinfo.STATUS"
+								:items="status"
+								menu-props="auto"
+								label="Select"
+								hide-details
+								single-line
+								dense>
+								<template slot="selection" slot-scope="data">
+									{{ data.item.text }}
+								</template>
+								<template slot="item" slot-scope="data">
+									{{ data.item.text }}
+								</template>
+							</v-select>
+						</td>
+					</tr>
+					<tr>
+						<td>Tax Parcel ID</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Sphere of Influence</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Postal City</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Address Zipcode</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Address County</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+					<tr>
+						<td>Address State</td>
+						<td>
+							{{ new_addrinfo.SITEADDID }}
+						</td>
+					</tr>
+				</tbody>
+            </template>
+        </v-simple-table>
+
+		<v-divider class="mx-4"></v-divider>
+
+        <v-card-actions class="ma-2">
+            <v-btn 
+				class="ma-2 d-none d-sm-flex white--text" 
+				color="teal" 
+				@click="save( )"
+			>
+				<v-icon left>mdi-content-save</v-icon>Save
+			</v-btn>
+
+			<v-btn 
+				class="ma-2 d-none d-sm-flex white--text" 
+				color="teal"
+				@click="cancel( )"
+			>
+				<v-icon left>mdi-arrow-left-circle</v-icon>Cancel
+			</v-btn>
+
+        </v-card-actions>
+
+        <v-divider class="mx-4"></v-divider>
+
+
+    </v-card>
+
 </template>
 
 <script>
-  	import GetInfoByADMKey from "../js/getInfoByADMKey"
-	import ObjDiffs from "../js/objdiffs"
-	import ObjToUppercase from "../js/objtouppercase"
-  	
-  	export default {
-    	name: "edit",
-    	
-		data: ( ) => ( {
-			loading: false,
-			searchInput: null,
-			st_selection: null,
-      		headers: [
-				{ text: "Street Name Juris", value: "STREETNAMEJURIS", sortable: false },
-				{ text: "Status", value: "STATUS", sortable: false }
-			
-			],
+    export default {
+        name: "detail",
+        
+		computed: {
+			addrinfo( ){
+                return this.$store.state.addrinfo
 
-			headers2: [
-				{ text: "Dir", value: "PREADDRNUM", sortable: false },
-				{ text: "Street Name", value: "STREETNAME", sortable: false },
-				{ text: "Street Type", value: "STREETTYPE", sortable: false },
-				{ text: "Street Suffix", value: "ADDRNUMSUF", sortable: false },
-				{ text: "Jurisdiction", value: "MUNICIPALITY", sortable: false }
+            },
+
+			matid( ){
+            	return this.$route.params.matid; 
+          	
 			
-			],
+			},
+
+			new_addrinfo( ){
+                return this.$store.state.new_addrinfo
+
+            },
+
+            route_name( ){
+				return this.$route.name; 
 			
-			headers3: [
-				{ text: "Directions to Street", value: "directions", sortable: false },
-				{ text: "Comments", value: "comments", sortable: false },
-				{ text: "Reason for Name Change", value: "reason", sortable: false }
-			
-			],
-			status: [
+            }
+
+    	},
+
+ 		data( ){
+      		return {
+				headers: [
+					{ text: "Site Address ID", value: "SITEADDID", sortable: false },
+					{ text: "Effective Status", value: "STATUS", sortable: false },
+					{ text: "Street Name and Juris", value: "STREETNAMEJURIS", sortable: false },
+					{ text: "Address Number", value: "ADDRNUM", sortable: false },
+					{ text: "Street Prefix Direction", value: "PREADDRNUM", sortable: false },
+					{ text: "Street Name", value: "STREETNAME", sortable: false },
+					{ text: "Standard Street Type", value: "STANDTYPE", sortable: false },
+					{ text: "Meck Street Type", value: "STREETTYPE", sortable: false },
+					{ text: "Street Suffix", value: "ADDRNUMSUF", sortable: false },
+					{ text: "Address Unit Type", value: "UNITTYPE", sortable: false },
+					{ text: "Address Unit Number", value: "UNITID", sortable: false }
+					
+				],
+
+				loading: false,
+
+				status: [
 				{ value: "Deletion", text: "Deletion" },
 				{ value: "Current", text: "Current" },
 				{ value: "Demolition", text: "Demolition" },
@@ -223,156 +332,26 @@
 			citystcode_rules: [
 				v => !!v || 'City Code is required'
 			
-			],
-			nochanges: false,
-			stcode: null
-
-    	} ),
-
-    	computed: {
-			addrinfo: {
-      			set( addrinfo ){
-					this.$store.commit( "addrinfo", addrinfo )
-									
-				},
-      			get( ){
-					return this.$store.state.addrinfo
-      			
-				}
-							
-			},
-			
-			new_addrinfo: {
-      			set( new_addrinfo ){
-					this.$store.commit( "new_addrinfo", new_addrinfo )
-									
-				},
-      			get( ){
-					return this.$store.state.new_addrinfo
-      			
-				}
-							
-			},
-
-			route_name( ){
-				return this.$route.name;
-
-			},
-			
-			search_results: {
-      			set( search_results ){
-					this.$store.commit( "search_results", search_results )
-									
-				},
-      			get( ){
-					return this.$store.state.search_results
-      			
-				}
-							
-			},
-			
-			title( ){
-				return this.$route.meta.title
-			
+			]
+      		
 			}
-
-    	},
-
-		watch: {
-        	searchInput( val ){
-				val && val !== this.st_selection && this.getItems( val )
-
-        	},
-        	async st_selection( new_selection, old_selection ){
-				const _this = this;
-					
-				if( _this.st_selection ){
-					try{
-						const admkey = _this.st_selection.admkey,
-							aliaslegalflag = _this.st_selection.aliaslegalflag,
-							data = await GetInfoByADMKey( admkey, aliaslegalflag );
-						
-						
-					
-					}
-					catch( error ){
-						console.log( "parsing failed", error );
-
-					}
-					
-				}
-				
-			}
-      
-      	},
+    	
+		},
 
 		methods: {
 			save( type = null ){
-        		const _this = this;
-
-				if( _this.$refs.form.validate( ) ){
-					switch( _this.route_name ){
-						case "Edit":
-							_this.edit( type )
-						break
-
-						case "Add":							
-							_this.add( )
-						break
-
-					}
-				
-				}
+        		const _this = this
 
       		},
 
-			edit( type ){
-        		const _this = this,
-					change_row = ObjDiffs( _this.addrinfo[ 0 ], _this.new_addrinfo[ 0 ] )
-				
-				if( Object.keys( change_row ).length > 0 ){
-          			_this.nochanges = false;
-
-					let update_row = { }
-
-					console.log( this.new_addrinfo[ 0 ] )
-
-					update_row = { ...change_row };
-
-					console.log( update_row )
-
-					/*if( Object.keys( update_row ).length > 0 ){
-						dispatch_data.update = {
-								filter: _this.new_stinfo[ 0 ].objectid, 
-								data: JSON.stringify( ObjToUppercase( update_row ) ) 
-							}
-					}
-					
-					//update the specific row
-					this.$store.dispatch( "update", dispatch_data );*/
-					
-        		}else{
-          			_this.nochanges = true;
-
-        		}
-
-      		},
-
-			cancelSearch( ){
-				const _this = this
-
-      			if( _this.cancel_source ){
-        			_this.cancel_source.cancel( )
-
-      			}
-    		},
+			 cancel( ){
+				const _this = this;
+        		
+				_this.$router.go( -1 )
 			
-			clearResults( ){
-				this.search_results = [ ];
-        
-        	}
+			} 
 
 		}
 
-  	}
+    }
 </script>

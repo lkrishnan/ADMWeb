@@ -21,13 +21,9 @@ const routes = [
 	},   
 	  
 	{
-		path: "/edit/:oid",
+		path: "/edit/:matid",
 		name: "Edit",
-		meta: {
-			title: "Edit Address"
-		},
-		component: ( ) => import( /* webpackChunkName: "edit" */ "./components/Edit.vue" )
-	
+		component: Information	
 	}, 
 	
 	{

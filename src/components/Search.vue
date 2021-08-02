@@ -251,6 +251,10 @@
 
 						//set the addrinfo to display addr infomration
 						_this.addrinfo = await FormatAddrInfo( feature.attributes )
+						
+						//set edit addr information
+						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = feature.attributes;
+						this.$store.commit( "new_addrinfo", { ...temp } );
 
 					}
 
