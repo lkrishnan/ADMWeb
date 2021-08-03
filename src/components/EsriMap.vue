@@ -8,7 +8,6 @@
     import Map from "@arcgis/core/Map"
     import MapView from "@arcgis/core/views/MapView"
     import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer"
-    import Graphic from "@arcgis/core/Graphic"
     import TileLayer from "@arcgis/core/layers/TileLayer"
     import Extent from "@arcgis/core/geometry/Extent"
     import esriConfig from "@arcgis/core/config.js"

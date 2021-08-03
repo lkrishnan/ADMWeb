@@ -3,7 +3,7 @@
         class="rounded-0"
         :loading="loading"
         v-model="addrinfo"
-        v-if="addrinfo && route_name === 'Detail'"
+        v-if="formated_addrinfo && route_name === 'Detail'"
     >
         <template slot="progress">
             <v-progress-linear
@@ -15,10 +15,10 @@
 
         <v-img
             height="250"
-            :src="addrinfo.photo"
+            :src="formated_addrinfo.photo"
         ></v-img>
 
-        <v-card-title>{{ addrinfo.title }}</v-card-title>
+        <v-card-title>{{ formated_addrinfo.title }}</v-card-title>
 
         <v-divider class="mx-4"></v-divider>
 
@@ -50,7 +50,7 @@
             </thead>
             <tbody>
                 <tr
-                v-for="item in addrinfo.attributes"
+                v-for="item in formated_addrinfo.attributes"
                 :key="item.field"
                 >
                 <td>{{ item.desc }}</td>
@@ -65,10 +65,35 @@
 </template>
 
 <script>
+    import FormatAddrInfo from "../js/formatAddrInfo"
+    
     export default {
         name: "detail",
         
-		computed: {
+		data( ){
+      		return {
+                formated_addrinfo: null,
+                headers: [
+					{ text: "Site Address ID", value: "SITEADDID", sortable: false },
+					{ text: "Effective Status", value: "STATUS", sortable: false },
+					{ text: "Street Name and Juris", value: "STREETNAMEJURIS", sortable: false },
+					{ text: "Address Number", value: "ADDRNUM", sortable: false },
+					{ text: "Street Prefix Direction", value: "PREADDRNUM", sortable: false },
+					{ text: "Street Name", value: "STREETNAME", sortable: false },
+					{ text: "Standard Street Type", value: "STANDTYPE", sortable: false },
+					{ text: "Meck Street Type", value: "STREETTYPE", sortable: false },
+					{ text: "Street Suffix", value: "ADDRNUMSUF", sortable: false },
+					{ text: "Address Unit Type", value: "UNITTYPE", sortable: false },
+					{ text: "Address Unit Number", value: "UNITID", sortable: false }
+					
+				],
+				loading: false
+      		
+			}
+    	
+		},
+
+        computed: {
 			addrinfo( ){
                 return this.$store.state.addrinfo
 
@@ -92,28 +117,13 @@
 
     	},
 
- 		data( ){
-      		return {
-				headers: [
-					{ text: "Site Address ID", value: "SITEADDID", sortable: false },
-					{ text: "Effective Status", value: "STATUS", sortable: false },
-					{ text: "Street Name and Juris", value: "STREETNAMEJURIS", sortable: false },
-					{ text: "Address Number", value: "ADDRNUM", sortable: false },
-					{ text: "Street Prefix Direction", value: "PREADDRNUM", sortable: false },
-					{ text: "Street Name", value: "STREETNAME", sortable: false },
-					{ text: "Standard Street Type", value: "STANDTYPE", sortable: false },
-					{ text: "Meck Street Type", value: "STREETTYPE", sortable: false },
-					{ text: "Street Suffix", value: "ADDRNUMSUF", sortable: false },
-					{ text: "Address Unit Type", value: "UNITTYPE", sortable: false },
-					{ text: "Address Unit Number", value: "UNITID", sortable: false }
-					
-				],
+        watch: {
+            addrinfo: async function( ){
+				this.formated_addrinfo = await FormatAddrInfo( this.addrinfo )
 
-				loading: false
-      		
-			}
-    	
-		},
+      		}
+        
+        },
 
 		methods: {
 			takeAction( route_name ){

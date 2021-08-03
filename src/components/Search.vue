@@ -32,7 +32,6 @@
 
 <script>
   	import axios from "axios";
-	import FormatAddrInfo from "../js/formatAddrInfo"
 	
   	export default {
       	name: "search",
@@ -139,6 +138,7 @@
       
       	watch: {
 			matid: function( ){
+				console.log( "here" )
 				this.searchByMatID( )
 
       		},
@@ -232,6 +232,8 @@
 				const _this = this,
 					regex = new RegExp( "\\d{1,6}" );
 
+				console.log( _this.matid )
+
 				regex.test( _this.matid )
 
 				_this.addr_layer.queryFeatures( {
@@ -250,10 +252,11 @@
 						}
 
 						//set the addrinfo to display addr infomration
-						_this.addrinfo = await FormatAddrInfo( feature.attributes )
+						//_this.addrinfo = await FormatAddrInfo( feature.attributes )
+						_this.addrinfo = feature.attributes
 						
 						//set edit addr information
-						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = feature.attributes;
+						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = feature.attributes
 						this.$store.commit( "new_addrinfo", { ...temp } );
 
 					}
