@@ -10,7 +10,7 @@
 			<!--Buttons for big screen -->
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">				
-					<v-btn class="ma-2 d-none d-sm-flex" color="light-green" v-bind="attrs" v-on="on">
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-green" v-bind="attrs" v-on="on" @click="takeAction( 'Reconcile' )">
 						<v-icon>mdi-download-outline</v-icon>
 					</v-btn>		
 				</template>
@@ -19,7 +19,7 @@
 
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on, attrs }">				
-					<v-btn class="ma-2 d-none d-sm-flex" color="light-green" v-bind="attrs" v-on="on">
+					<v-btn class="ma-2 d-none d-sm-flex" color="light-green" v-bind="attrs" v-on="on" @click="takeAction( 'Post' )">
 						<v-icon>mdi-upload-outline</v-icon>
 					</v-btn>		
 				</template>
@@ -134,6 +134,14 @@
 				const _this = this
 
 				switch( type ){
+					case "Reconcile":
+						_this.$store.dispatch( "reconcile", { task: "reconcile" } )
+						break
+
+					case "Post":
+						_this.$store.dispatch( "reconcile", { task: "post" } )
+						break
+
 					case "Login":
 						_this.$router.push( { name: type } )
 						break

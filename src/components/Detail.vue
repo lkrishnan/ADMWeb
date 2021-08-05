@@ -70,6 +70,11 @@
     export default {
         name: "detail",
         
+        mounted: function( ){
+      		this.searchByMatID( )
+
+    	},
+
 		data( ){
       		return {
                 formated_addrinfo: null,
@@ -87,15 +92,44 @@
 					{ text: "Address Unit Number", value: "UNITID", sortable: false }
 					
 				],
-				loading: false
+				loading: false,
+
+                sel_feature: {
+      			    set( sel_feature ){
+					    this.$store.commit( "sel_feature", sel_feature )
+									
+				    },
+      			    get( ){
+					    return this.$store.state.sel_feature
+      			
+				    }
+							
+			    }
       		
 			}
     	
 		},
 
         computed: {
-			addrinfo( ){
-                return this.$store.state.addrinfo
+			addr_fields( ){
+				return this.$store.state.addr_fields
+
+			},
+
+			addrinfo: {
+      			set( addrinfo ){
+					this.$store.commit( "addrinfo", addrinfo )
+									
+				},
+      			get( ){
+					return this.$store.state.addrinfo
+      			
+				}
+							
+			},
+
+			addr_layer( ){
+                return this.$store.state.addr_layer
 
             },
 
@@ -118,10 +152,28 @@
     	},
 
         watch: {
-            addrinfo: async function( ){
-				this.formated_addrinfo = await FormatAddrInfo( this.addrinfo )
+            matid: async function( ){
+                const _this = this
+                
+                _this.searchByMatID( )
+                /*,
+                    feature = await getInfoByMatID( _this.matid )
 
-      		}
+                if( feature ){
+                    console.log( feature.attributes )
+                    //set selected feature to hightlight the point on the map
+					_this.sel_feature = {
+						feature: feature,
+						zoom: _this.zoom
+
+					}
+
+                    //set the addrinfo to display addr infomration
+				    _this.addrinfo = await FormatAddrInfo( feature.attributes )
+
+                }*/
+
+            }  
         
         },
 
@@ -131,11 +183,50 @@
 
 				switch( route_name ){
 					case "Edit":
+                        //set edit addr information
+						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = _this.addrinfo
+						this.$store.commit( "new_addrinfo", { ...temp } );
                         this.$router.push( { name: route_name, params: { matid: _this.new_addrinfo.SITEADDID } } )
 						break;
 				
 				}
       		
+			},
+
+            searchByMatID( ){
+				const _this = this,
+					regex = new RegExp( "\\d{1,6}" );
+
+				if( regex.test( _this.matid ) ){
+                    _this.addr_layer.queryFeatures( {
+                        where: "SITEADDID = '" + _this.matid + "'",
+                        outFields: _this.addr_fields,
+                        returnGeometry: true
+                    } ).then( async ( results ) => {
+                        if( results.features.length > 0 ){
+                            const feature = results.features[ 0 ] 
+                            
+                            //set selected feature to hightlight the point on the map
+                            _this.sel_feature = {
+                                feature: feature,
+                                zoom: _this.zoom
+
+                            }
+
+                            //set the addrinfo to display addr infomration
+                            _this.addrinfo = feature.attributes
+                            this.formated_addrinfo = await FormatAddrInfo( feature.attributes )
+                            
+                        }
+
+                    } )
+                    .catch( thrown => {
+                        console.log( "parsing failed", thrown );
+                        
+                    } )
+                    
+                }
+
 			}
 
 		}

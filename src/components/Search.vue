@@ -36,11 +36,6 @@
   	export default {
       	name: "search",
 
-		mounted: function( ){
-      		this.searchByMatID( )
-
-    	},
-
 		data: ( ) => ( {
 			axios_inst: axios.create( { 
 				headers: { 
@@ -137,11 +132,11 @@
       	},
       
       	watch: {
-			matid: function( ){
-				console.log( "here" )
-				this.searchByMatID( )
+			//matid: function( ){
+			//	console.log( "here" )
+				//this.searchByMatID( )
 
-      		},
+      		//},
 
         	searchInput( val ){
 				val && val !== this.st_selection && this.getItems( val )
@@ -231,8 +226,6 @@
 			searchByMatID( ){
 				const _this = this,
 					regex = new RegExp( "\\d{1,6}" );
-
-				console.log( _this.matid )
 
 				regex.test( _this.matid )
 

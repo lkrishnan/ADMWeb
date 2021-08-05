@@ -215,6 +215,23 @@ export default new Vuex.Store( {
 
 			commit( "progress", { login: 0 } )
 		
+		},
+
+		async reconcile( { commit }, reconcile_data ){
+			let reconcile_instance = axios.create( {
+					headers: ( this.state.token.length > 0 ? { "Authorization": this.state.token } : { } )
+				} ),
+				reply = ( await reconcile_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/reconcile", reconcile_data ) ).data
+		
+			if( reply.result === "success" ){
+				//router.replace( { name: "Detail", params: { stcode: reply.stcode } } )
+				console.log( "success" )
+				
+			}else if( reply.result === "failure" ){
+				console.log( reply.error)
+
+			}
+
 		}
 
   	}
