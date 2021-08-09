@@ -104,6 +104,7 @@
 
         watch: {
       		sel_feature: function( ){
+                console.log( "here" )
         		this.hightlightAddrPt( )
       		
             }

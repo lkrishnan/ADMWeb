@@ -92,19 +92,7 @@
 					{ text: "Address Unit Number", value: "UNITID", sortable: false }
 					
 				],
-				loading: false,
-
-                sel_feature: {
-      			    set( sel_feature ){
-					    this.$store.commit( "sel_feature", sel_feature )
-									
-				    },
-      			    get( ){
-					    return this.$store.state.sel_feature
-      			
-				    }
-							
-			    }
+				loading: false
       		
 			}
     	
@@ -147,7 +135,19 @@
             route_name( ){
 				return this.$route.name; 
 			
-            }
+            },
+
+            sel_feature: {
+      			set( sel_feature ){
+					this.$store.commit( "sel_feature", sel_feature )
+									
+				},
+      			get( ){
+					return this.$store.state.sel_feature
+      			
+				}
+							
+			}
 
     	},
 

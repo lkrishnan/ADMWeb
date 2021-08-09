@@ -91,6 +91,8 @@ export default new Vuex.Store( {
 			login: 0
 		
 		},
+
+		refresh_detail: false,
 		
 		search_results: [ ],
 		
@@ -118,6 +120,7 @@ export default new Vuex.Store( {
 		new_stinfo: state => state.new_stinfo,
 		oid: state => state.oid,
 		progress: state => state.progress,
+		refresh_detail: state => state.refresh_detail,
 		search_results: state => state.search_results,
 		sel_feature: state => state.sel_feature,
 		ws: state => state.ws,
@@ -167,6 +170,10 @@ export default new Vuex.Store( {
 			
 			}
 		
+		},
+		refresh_detail( state, payload ){
+			state.refresh_detail = payload
+
 		},
 		search_results( state, payload ){
 			state.search_results = payload
